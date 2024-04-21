@@ -27,34 +27,40 @@ export default function Index() {
   return (
     <div>
       {data.length > 0 ?
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Image</TableHead>
-              <TableHead>Name</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map(d => (
-              <TableRow key={d.id}>
-                <TableCell>
-                  <Link to={`/pokemons/${d.id}`}>
-                    <img
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
-                      alt={`${d.name} image`}
-                    />
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/pokemons/${d.id}`}>
-                    {d.name}
-                  </Link>
-                </TableCell>
+        <div>
+          <h1 className="flex justify-center items-center text-3xl font-mono m-4 font-bold tracking-tight text-gray-900 sm:text-4xl md:text-5xl p-6">
+            <span className="text-transparent bg-clip-text bg-gradient-to-tr to-cyan-500 from-blue-600">
+              Pokemons Owned
+            </span>
+          </h1>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Image</TableHead>
+                <TableHead>Name</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table> :
-        null
+            </TableHeader>
+            <TableBody>
+              {data.map(d => (
+                <TableRow key={d.id}>
+                  <TableCell>
+                    <Link to={`/pokemons/${d.id}`}>
+                      <img
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
+                        alt={`${d.name} image`}
+                      />
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/pokemons/${d.id}`}>
+                      {d.name}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div> : null
       }
     </div>
   );
