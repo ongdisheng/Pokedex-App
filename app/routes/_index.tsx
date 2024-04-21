@@ -38,12 +38,18 @@ export default function Index() {
             {data.map(d => (
               <TableRow key={d.id}>
                 <TableCell>
-                  <img
-                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
-                    alt={`${d.name} image`}
-                  />
+                  <Link to={`/pokemons/${d.id}`}>
+                    <img
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
+                      alt={`${d.name} image`}
+                    />
+                  </Link>
                 </TableCell>
-                <TableCell>{d.name}</TableCell>
+                <TableCell>
+                  <Link to={`/pokemons/${d.id}`}>
+                    {d.name}
+                  </Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
