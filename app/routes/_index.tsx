@@ -26,7 +26,7 @@ export default function Index() {
     <div>
       {data.length > 0 ?
         <div>
-          <h1 className="flex justify-center items-center text-3xl font-mono m-4 font-bold tracking-tight text-gray-900 sm:text-4xl md:text-5xl p-6">
+          <h1 className="flex justify-center items-center text-2xl font-mono m-4 font-bold tracking-tight text-gray-900 sm:text-3xl md:text-4xl p-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-tr to-cyan-500 from-blue-600">
               Pokemons Owned
             </span>
