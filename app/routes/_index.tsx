@@ -8,6 +8,14 @@ import {
   TableCell,
   TableRow,
 } from "~/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
+import { useState } from "react";
 
 // loader function
 export const loader = async () => {
@@ -21,6 +29,11 @@ export default function Index() {
   // get data from loader function
   const { data } = useLoaderData<typeof loader>();
 
+  // display data using pagination
+  const pokemonsPerPage = 5;
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(pokemonsPerPage);
+
   // render owned pokemons data
   return (
     <div>
@@ -31,10 +44,11 @@ export default function Index() {
               Pokemons Owned
             </span>
           </h1>
+
           <div className="flex justify-center items-center">
             <Table className="border">
               <TableBody>
-                {data.map(d => (
+                {data.slice(startIndex, endIndex).map(d => (
                   <TableRow key={d.id}>
                     <TableCell className="flex justify-center items-center">
                       <Link to={`/pokemons/${d.id}`}>
@@ -55,6 +69,33 @@ export default function Index() {
               </TableBody>
             </Table>
           </div>
+
+          <Pagination className="mt-2">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  className={
+                    startIndex === 0 ? "pointer-events-none opacity-50" : undefined
+                  }
+                  onClick={() => {
+                    setStartIndex(startIndex - pokemonsPerPage);
+                    setEndIndex(endIndex - pokemonsPerPage);
+                  }}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  className={
+                    Math.floor(data.length / endIndex) === 0 ? "pointer-events-none opacity-50" : undefined
+                  }
+                  onClick={() => {
+                    setStartIndex(startIndex + pokemonsPerPage);
+                    setEndIndex(endIndex + pokemonsPerPage);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div> : null
       }
     </div>
