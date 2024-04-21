@@ -33,33 +33,30 @@ export default function Index() {
               Pokemons Owned
             </span>
           </h1>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Image</TableHead>
-                <TableHead>Name</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map(d => (
-                <TableRow key={d.id}>
-                  <TableCell>
-                    <Link to={`/pokemons/${d.id}`}>
-                      <img
-                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
-                        alt={`${d.name} image`}
-                      />
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/pokemons/${d.id}`}>
-                      {d.name}
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="flex justify-center items-center">
+            <Table className="border">
+              <TableBody>
+                {data.map(d => (
+                  <TableRow key={d.id}>
+                    <TableCell className="flex justify-center items-center">
+                      <Link to={`/pokemons/${d.id}`}>
+                        <img
+                          className="scale-125"
+                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
+                          alt={`${d.name} image`}
+                        />
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-center border font-mono text-xl">
+                      <Link to={`/pokemons/${d.id}`}>
+                        <span>{d.name}</span>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div> : null
       }
     </div>
