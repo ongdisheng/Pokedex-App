@@ -3,12 +3,6 @@ import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import supabase from "utils/supabase";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "~/components/ui/table";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -16,6 +10,15 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { useState } from "react";
+import {
+  Card,
+  Image,
+  Typography,
+  Flex,
+  Row,
+  Col
+} from "antd";
+const { Title, Text } = Typography;
 
 // loader function
 export const loader = async () => {
@@ -30,7 +33,7 @@ export default function Index() {
   const { data } = useLoaderData<typeof loader>();
 
   // display data using pagination
-  const pokemonsPerPage = 5;
+  const pokemonsPerPage = 9;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(pokemonsPerPage);
 
@@ -40,37 +43,30 @@ export default function Index() {
       {data.length > 0 ?
         <div>
           <h1 className="flex justify-center items-center text-2xl font-mono m-4 font-bold tracking-tight text-gray-900 sm:text-3xl md:text-4xl p-6">
-            <span className="text-transparent bg-clip-text bg-gradient-to-tr to-cyan-500 from-blue-600">
-              Pokemons Owned
-            </span>
+            Pokemons Owned
           </h1>
 
-          <div className="flex justify-center items-center">
-            <Table className="border">
-              <TableBody>
-                {data.slice(startIndex, endIndex).map(d => (
-                  <TableRow key={d.id}>
-                    <TableCell className="flex justify-center items-center">
-                      <Link to={`/pokemons/${d.id}`}>
-                        <img
-                          className="scale-125"
-                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
-                          alt={`${d.name} image`}
-                        />
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-center border font-mono text-xl">
-                      <Link to={`/pokemons/${d.id}`}>
-                        <span>{d.name}</span>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <Row gutter={[16, 16]} justify="center">
+            {data.slice(startIndex, endIndex).map(d => (
+              <Col key={d.id}>
+                <Link to={`/pokemons/${d.id}`}>
+                  <Card hoverable className="min-h-full text-center	w-[90vw] sm:w-[300px]">
+                    <Image
+                      preview={false}
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
+                      alt={`${d.name} image`}
+                    />
+                    <Flex justify="center" align="center" vertical>
+                      <Text type="secondary">#{d.id}</Text>
+                      <Title level={4} className="capitalize font-bold !text-stone-600 !m-0">{d.name}</Title>
+                    </Flex>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
 
-          <Pagination className="mt-2">
+          <Pagination className="mt-4">
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
