@@ -148,10 +148,14 @@ export default function PokemonDetails() {
         <div className="flex flex-col p-2">
           <div className="flex justify-evenly">
             {pokemonTypes.map(type => {
-              const backgroundColor = getTypeColor(type.pokemon_v2_type.name);
+              const typeColor = getTypeColor(type.pokemon_v2_type.name);
 
               return (
-                <Text key={type.pokemon_v2_type.name} className={`capitalize px-2 py-1 rounded ${backgroundColor}`}>
+                <Text 
+                  key={type.pokemon_v2_type.name} 
+                  className="capitalize px-2 py-1 rounded"
+                  style={{ backgroundColor: `${typeColor}` }}
+                >
                   {type.pokemon_v2_type.name}
                 </Text>
               )
