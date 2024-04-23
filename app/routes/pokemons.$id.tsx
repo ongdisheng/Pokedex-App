@@ -185,7 +185,7 @@ export default function PokemonDetails() {
           <TabsContent value="moves">
             <div className="grid grid-cols-2 gap-4">
               {pokemonMoves.map(move => (
-                <Card>
+                <Card key={move.pokemon_v2_move.name}>
                   <CardHeader className="capitalize">
                     <CardTitle>{move.pokemon_v2_move.name.split("-").join(" ")}</CardTitle>
                     <CardDescription>Level {move.level}</CardDescription>
