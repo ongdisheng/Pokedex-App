@@ -10,10 +10,9 @@ import { pokemonDetailsQuery } from "~/graphql/query.server";
 import {
   Image,
   Typography,
-  Flex,
 } from "antd";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 // define interface for data
 interface PokemonData {
@@ -42,6 +41,34 @@ interface PokemonData {
     }>
   }>
 }
+
+// get pokemon type color
+const getTypeColor = (type: string) => {
+  const typeColors: { [key: string]: string } = {
+    bug: "bg-lime-500",
+    dark: "bg-zinc-600",
+    dragon: "bg-orange-300",
+    electric: "bg-yellow-400",
+    fairy: "bg-pink-300",
+    fire: "bg-orange-400",
+    fighting: "bg-amber-600",
+    flying: "bg-sky-200",
+    ghost: "bg-purple-300",
+    grass: "bg-lime-400",
+    ground: "bg-yellow-700",
+    ice: "bg-cyan-300",
+    normal: "bg-slate-400",
+    poison: "bg-purple-300",
+    psychic: "bg-rose-400",
+    rock: "bg-yellow-600",
+    shadow: "bg-stone-500",
+    steel: "bg-gray-400",
+    unknown: "bg-emerald-400",
+    water: "bg-blue-500",
+  };
+
+  return typeColors[type] || "#FFF";
+};
 
 // loader function
 export async function loader({
@@ -86,7 +113,7 @@ export default function PokemonDetails() {
   const pokemonStats = pokemonInfo.pokemon_v2_pokemonstats;
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen items-center">
       <Title className="!text-stone-600 capitalize mt-[24px] sm:ml-[24px]">
         {pokemonInfo.name} #{pokemonInfo.id}
       </Title>
@@ -96,10 +123,21 @@ export default function PokemonDetails() {
           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonInfo.id}.png`}
           preview={false}
         />
-        <div className="flex flex-col">
-          <span>Base Experience: {pokemonInfo.base_experience}</span>
-          <span>Height: {pokemonInfo.height}</span>
-          <span>Weight: {pokemonInfo.weight}</span>
+        <div className="flex flex-col p-2">
+          <div className="flex justify-evenly">
+            {pokemonTypes.map(type => {
+              const backgroundColor = getTypeColor(type.pokemon_v2_type.name);
+
+              return (
+                <Text key={type.pokemon_v2_type.name} className={`${backgroundColor} capitalize px-2 py-1 rounded`}>
+                  {type.pokemon_v2_type.name}
+                </Text>
+              )
+            })}
+          </div>
+          <Text>Base Experience: {pokemonInfo.base_experience}</Text>
+          <Text>Height: {pokemonInfo.height}</Text>
+          <Text>Weight: {pokemonInfo.weight}</Text>
         </div>
       </div>
     </div>
