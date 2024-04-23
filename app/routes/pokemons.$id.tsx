@@ -113,7 +113,7 @@ export default function PokemonDetails() {
   return (
     <div className="flex flex-col min-h-screen items-center">
       <div className="flex flex-row justify-center items-center">
-        <Title className="!text-stone-600 capitalize mt-[24px] sm:ml-[24px]">
+        <Title className="capitalize mt-[24px] sm:ml-[24px]">
           {pokemonInfo.name} #{pokemonInfo.id}
         </Title>
         <Form method="post">
