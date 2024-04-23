@@ -25,6 +25,7 @@ export const loader = async () => {
   // retrieve owned pokemons from db
   let { data } = await supabase.from("Pokemons_Owned").select();
   data = data ?? [];
+  data.sort((a, b) => a.id - b.id);
   return json({ data });
 };
 
