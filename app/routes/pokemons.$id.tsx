@@ -65,6 +65,11 @@ export default function PokemonDetails() {
   const pokemonTypes = pokemonInfo.pokemon_v2_pokemontypes;
   const pokemonStats = pokemonInfo.pokemon_v2_pokemonstats;
 
+  // retrieve stats with max value
+  const maxStat = pokemonStats.reduce((prev, current) => {
+    return prev.base_stat > current.base_stat ? prev : current
+  });
+  
   return (
     <div className="flex flex-col min-h-screen items-center">
       <Title className="!text-stone-600 capitalize mt-[24px] sm:ml-[24px]">
@@ -106,7 +111,7 @@ export default function PokemonDetails() {
               <div key={stat.pokemon_v2_stat.name} className="m-4">
                 <Text className="uppercase">
                   {stat.pokemon_v2_stat.name} {stat.base_stat}
-                  <Progress value={stat.base_stat} />
+                  <Progress value={stat.base_stat / maxStat.base_stat * 100} />
                 </Text>
               </div>
             ))}
