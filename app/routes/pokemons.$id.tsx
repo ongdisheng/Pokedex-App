@@ -2,14 +2,18 @@
 import {
   isRouteErrorResponse,
   useLoaderData,
-  useRouteError
+  useRouteError,
+  Form
 } from "@remix-run/react";
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import client from "~/graphql/client.server";
 import { pokemonDetailsQuery } from "~/graphql/query.server";
 import { getTypeColor } from "utils/getTypeColor";
 import { PokemonData } from "utils/interface";
+import { FormData } from "utils/type";
+import supabase from "utils/supabase";
 import { Progress } from "~/components/ui/progress";
+import { Button } from "~/components/ui/button";
 import {
   Tabs,
   TabsContent,
@@ -18,9 +22,7 @@ import {
 } from "~/components/ui/tabs";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -44,7 +46,14 @@ export async function loader({
       status: 503,
     });
   }
-  return json({ data })
+
+  // query if this pokemon exists from db 
+  const isOwned = await supabase
+    .from("Pokemons_Owned")
+    .select()
+    .eq("id", params.id!);
+
+  return json({ data, isOwned: isOwned.data?.length === 1 })
 }
 
 // handle errors from loader function
@@ -63,9 +72,32 @@ export const ErrorBoundary = () => {
   }
 }
 
+// action function
+export const action = async ({
+  request,
+}: ActionFunctionArgs) => {
+  // retrieve action type
+  const formData = await request.formData();
+  const { action, ...pokemon } = Object.fromEntries(formData) as FormData;
+
+  // delete or add pokemon depending on action value
+  if (action === "Remove") {
+    await supabase
+      .from("Pokemons_Owned")
+      .delete()
+      .eq('id', pokemon.id);
+  } else {
+    await supabase
+      .from("Pokemons_Owned")
+      .insert({ id: parseInt(pokemon.id), name: pokemon.name })
+  }
+
+  return redirect(`/pokemons/${pokemon.id}`)
+};
+
 export default function PokemonDetails() {
   // get data from loader function
-  const { data } = useLoaderData<typeof loader>();
+  const { data, isOwned } = useLoaderData<typeof loader>();
 
   // retrieve pokemon info from data
   const pokemonInfo = data.pokemon_v2_pokemon[0];
@@ -80,9 +112,33 @@ export default function PokemonDetails() {
 
   return (
     <div className="flex flex-col min-h-screen items-center">
-      <Title className="!text-stone-600 capitalize mt-[24px] sm:ml-[24px]">
-        {pokemonInfo.name} #{pokemonInfo.id}
-      </Title>
+      <div className="flex flex-row justify-center items-center">
+        <Title className="!text-stone-600 capitalize mt-[24px] sm:ml-[24px]">
+          {pokemonInfo.name} #{pokemonInfo.id}
+        </Title>
+        <Form method="post">
+          <input
+            type="hidden"
+            name="action"
+            value={isOwned ? "Remove" : "Add"}
+          />
+          <input
+            type="hidden"
+            name="id"
+            value={pokemonInfo.id}
+          />
+          <input
+            type="hidden"
+            name="name"
+            value={pokemonInfo.name}
+          />
+          <Button
+            type="submit"
+            className={`m-4 ${isOwned ? "bg-red-500 hover:bg-red-400" : "bg-blue-500 hover:bg-blue-400"}`}>
+            {isOwned ? "Remove" : "Add"}
+          </Button>
+        </Form>
+      </div>
       <div className="flex items-center">
         <Image
           width={150}
