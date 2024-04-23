@@ -8,6 +8,7 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import client from "~/graphql/client.server";
 import { pokemonDetailsQuery } from "~/graphql/query.server";
 import { getTypeColor } from "utils/getTypeColor";
+import { PokemonData } from "utils/interface";
 import { Progress } from "~/components/ui/progress";
 import {
   Tabs,
@@ -21,34 +22,6 @@ import {
 } from "antd";
 
 const { Title, Text } = Typography;
-
-// define interface for data
-interface PokemonData {
-  pokemon_v2_pokemon: Array<{
-    base_experience: number,
-    height: number,
-    weight: number,
-    id: number,
-    name: string,
-    pokemon_v2_pokemonmoves: Array<{
-      level: number,
-      pokemon_v2_move: {
-        name: string
-      }
-    }>,
-    pokemon_v2_pokemonstats: Array<{
-      base_stat: number,
-      pokemon_v2_stat: {
-        name: string
-      }
-    }>,
-    pokemon_v2_pokemontypes: Array<{
-      pokemon_v2_type: {
-        name: string
-      }
-    }>
-  }>
-}
 
 // loader function
 export async function loader({
