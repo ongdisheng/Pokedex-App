@@ -17,6 +17,14 @@ import {
   TabsTrigger,
 } from "~/components/ui/tabs";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import {
   Image,
   Typography,
 } from "antd";
@@ -118,7 +126,18 @@ export default function PokemonDetails() {
               </div>
             ))}
           </TabsContent>
-          <TabsContent value="moves">Change your password here.</TabsContent>
+          <TabsContent value="moves">
+            <div className="grid grid-cols-2 gap-4">
+              {pokemonMoves.map(move => (
+                <Card>
+                  <CardHeader className="capitalize">
+                    <CardTitle>{move.pokemon_v2_move.name.split("-").join(" ")}</CardTitle>
+                    <CardDescription>Level {move.level}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
