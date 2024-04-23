@@ -8,6 +8,13 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import client from "~/graphql/client.server";
 import { pokemonDetailsQuery } from "~/graphql/query.server";
 import { getTypeColor } from "utils/getTypeColor";
+import { Progress } from "~/components/ui/progress";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "~/components/ui/tabs";
 import {
   Image,
   Typography,
@@ -102,16 +109,37 @@ export default function PokemonDetails() {
               const backgroundColor = getTypeColor(type.pokemon_v2_type.name);
 
               return (
-                <Text key={type.pokemon_v2_type.name} className={`${backgroundColor} capitalize px-2 py-1 rounded`}>
+                <Text key={type.pokemon_v2_type.name} className={`capitalize px-2 py-1 rounded ${backgroundColor}`}>
                   {type.pokemon_v2_type.name}
                 </Text>
               )
             })}
           </div>
-          <Text>Base Experience: {pokemonInfo.base_experience}</Text>
-          <Text>Height: {pokemonInfo.height}</Text>
-          <Text>Weight: {pokemonInfo.weight}</Text>
+          <div className="flex flex-col m-1">
+            <Text>Base Experience: {pokemonInfo.base_experience}</Text>
+            <Text>Height: {pokemonInfo.height}</Text>
+            <Text>Weight: {pokemonInfo.weight}</Text>
+          </div>
         </div>
+      </div>
+      <div>
+        <Tabs defaultValue="stats" className="w-[500px] m-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="stats">Stats</TabsTrigger>
+            <TabsTrigger value="moves">Moves</TabsTrigger>
+          </TabsList>
+          <TabsContent value="stats">
+            {pokemonStats.map(stat => (
+              <div key={stat.pokemon_v2_stat.name} className="m-4">
+                <Text className="uppercase">
+                  {stat.pokemon_v2_stat.name} {stat.base_stat}
+                  <Progress value={stat.base_stat} />
+                </Text>
+              </div>
+            ))}
+          </TabsContent>
+          <TabsContent value="moves">Change your password here.</TabsContent>
+        </Tabs>
       </div>
     </div>
   )
