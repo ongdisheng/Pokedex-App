@@ -29,6 +29,7 @@ export const loader = async () => {
   return json({ data });
 };
 
+// handle cache control for document response
 export let headers: HeadersFunction = () => {
   return {
     "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate, private"
@@ -87,7 +88,7 @@ export default function Index() {
               <PaginationItem>
                 <PaginationNext
                   className={
-                    Math.floor(data.length / endIndex) === 0 ? "pointer-events-none opacity-50" : undefined
+                    data.length <= endIndex ? "pointer-events-none opacity-50" : undefined
                   }
                   onClick={() => {
                     setStartIndex(startIndex + pokemonsPerPage);
