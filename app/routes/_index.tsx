@@ -1,5 +1,5 @@
 // import statements
-import { json } from "@remix-run/node";
+import { HeadersFunction, json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import supabase from "utils/supabase";
 import {
@@ -27,6 +27,12 @@ export const loader = async () => {
   data = data ?? [];
   data.sort((a, b) => a.id - b.id);
   return json({ data });
+};
+
+export let headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate, private"
+  };
 };
 
 export default function Index() {
