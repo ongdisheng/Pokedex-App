@@ -113,7 +113,7 @@ export default function PokemonDetails() {
   return (
     <div className="flex flex-col min-h-screen items-center">
       <div className="flex flex-row justify-center items-center">
-        <Title className="capitalize mt-[24px] sm:ml-[24px]">
+        <Title className="capitalize mt-[24px]">
           {pokemonInfo.name} #{pokemonInfo.id}
         </Title>
         <Form method="post">
@@ -169,7 +169,7 @@ export default function PokemonDetails() {
         </div>
       </div>
       <div>
-        <Tabs defaultValue="stats" className="w-[500px] m-4">
+        <Tabs defaultValue="stats" className="w-[300px] sm:w-[500px] m-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="stats">Stats</TabsTrigger>
             <TabsTrigger value="moves">Moves</TabsTrigger>
