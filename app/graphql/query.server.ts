@@ -10,7 +10,7 @@ export const pokemonDetailsQuery = gql`
       height
       weight
       base_experience
-      pokemon_v2_pokemonmoves(distinct_on: move_id, order_by: {move_id: asc}, limit: 6) {
+      pokemon_v2_pokemonmoves(distinct_on: move_id, order_by: {move_id: asc}) {
         level
         pokemon_v2_move {
           name
