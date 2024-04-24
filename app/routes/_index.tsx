@@ -54,7 +54,7 @@ export default function Index() {
         <div className="flex flex-col min-h-screen items-center">
           <Title className="text-center m-4">Pokemons Owned</Title>
 
-          <div className="w-1/2 xs:w-2/5 items-center">
+          <div className="w-2/5 sm:w-1/2 items-center">
             <Row gutter={[16, 16]} justify="center">
               {data.slice(startIndex, endIndex).map(d => (
                 <Col key={d.id}>
