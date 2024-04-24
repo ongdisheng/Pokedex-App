@@ -5,6 +5,7 @@ import {
   useRouteError,
   Form
 } from "@remix-run/react";
+import { useState } from "react";
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import client from "~/graphql/client.server";
 import { pokemonDetailsQuery } from "~/graphql/query.server";
@@ -26,6 +27,13 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
 import {
   Image,
   Typography,
@@ -110,6 +118,11 @@ export default function PokemonDetails() {
     return prev.base_stat > current.base_stat ? prev : current
   });
 
+  // display moves using pagination
+  const movesPerPage = 6;
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(movesPerPage);
+
   return (
     <div className="flex flex-col min-h-screen items-center">
       <div className="flex flex-row justify-center items-center">
@@ -151,8 +164,8 @@ export default function PokemonDetails() {
               const typeColor = getTypeColor(type.pokemon_v2_type.name);
 
               return (
-                <Text 
-                  key={type.pokemon_v2_type.name} 
+                <Text
+                  key={type.pokemon_v2_type.name}
                   className="capitalize px-2 py-1 rounded"
                   style={{ backgroundColor: `${typeColor}` }}
                 >
@@ -188,7 +201,7 @@ export default function PokemonDetails() {
           </TabsContent>
           <TabsContent value="moves">
             <div className="grid grid-cols-2 gap-4">
-              {pokemonMoves.map(move => (
+              {pokemonMoves.slice(startIndex, endIndex).map(move => (
                 <Card key={move.pokemon_v2_move.name}>
                   <CardHeader className="capitalize">
                     <CardTitle>{move.pokemon_v2_move.name.split("-").join(" ")}</CardTitle>
@@ -197,6 +210,32 @@ export default function PokemonDetails() {
                 </Card>
               ))}
             </div>
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    className={
+                      startIndex === 0 ? "pointer-events-none opacity-50" : undefined
+                    }
+                    onClick={() => {
+                      setStartIndex(startIndex - movesPerPage);
+                      setEndIndex(endIndex - movesPerPage);
+                    }}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    className={
+                      pokemonMoves.length <= endIndex ? "pointer-events-none opacity-50" : undefined
+                    }
+                    onClick={() => {
+                      setStartIndex(startIndex + movesPerPage);
+                      setEndIndex(endIndex + movesPerPage);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </TabsContent>
         </Tabs>
       </div>
