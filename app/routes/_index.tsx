@@ -52,7 +52,7 @@ export default function Index() {
     <div>
       {data.length > 0 ?
         <div className="flex flex-col min-h-screen items-center">
-          <Title className="text-center m-4">Pokemons Owned</Title>
+          <Title className="text-center m-4">Your Collection</Title>
 
           <div className="w-2/5 sm:w-1/2 items-center">
             <Row gutter={[16, 16]} justify="center">
