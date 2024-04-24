@@ -16,9 +16,11 @@ import {
   Typography,
   Flex,
   Row,
-  Col
+  Col,
+  Layout
 } from "antd";
 const { Title, Text } = Typography;
+const { Content } = Layout;
 
 // loader function
 export const loader = async () => {
@@ -49,28 +51,30 @@ export default function Index() {
   return (
     <div>
       {data.length > 0 ?
-        <div>
-          <Title className="text-center">Pokemons Owned</Title>
+        <div className="flex flex-col min-h-screen items-center">
+          <Title className="text-center m-4">Pokemons Owned</Title>
 
-          <Row gutter={[16, 16]} justify="center">
-            {data.slice(startIndex, endIndex).map(d => (
-              <Col key={d.id}>
-                <Link to={`/pokemons/${d.id}`}>
-                  <Card hoverable className="min-h-full text-center	w-[90vw] sm:w-[300px]">
-                    <Image
-                      preview={false}
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
-                      alt={`${d.name} image`}
-                    />
-                    <Flex justify="center" align="center" vertical>
-                      <Text type="secondary">#{d.id}</Text>
-                      <Title level={4} className="capitalize font-bold !text-stone-600 !m-0">{d.name}</Title>
-                    </Flex>
-                  </Card>
-                </Link>
-              </Col>
-            ))}
-          </Row>
+          <div className="w-1/2 xs:w-2/5 items-center">
+            <Row gutter={[16, 16]} justify="center">
+              {data.slice(startIndex, endIndex).map(d => (
+                <Col key={d.id}>
+                  <Link to={`/pokemons/${d.id}`}>
+                    <Card hoverable className="min-h-full text-center	w-[90vw] sm:w-[300px]">
+                      <Image
+                        preview={false}
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
+                        alt={`${d.name} image`}
+                      />
+                      <Flex justify="center" align="center" vertical>
+                        <Text type="secondary">#{d.id}</Text>
+                        <Title level={4} className="capitalize font-bold !text-stone-600 !m-0">{d.name}</Title>
+                      </Flex>
+                    </Card>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          </div>
 
           <Pagination className="mt-4">
             <PaginationContent>
