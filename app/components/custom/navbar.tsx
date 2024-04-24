@@ -1,22 +1,25 @@
-import { Link } from "@remix-run/react"
+// import statements
+import { Link } from "@remix-run/react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 
 export const NavBar = () => {
   return (
-    <nav className="bg-gray-800">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 py-2">
-        <div className="relative flex h-14 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-          </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex flex-shrink-0 items-center">
-              <Link to="/">
-                <img
-                  className="h-14 w-auto"
-                  src="https://cdn.worldvectorlogo.com/logos/pokemon-23.svg"
-                  alt="Pokemon image"
-                />
-              </Link>
-            </div>
+    <nav className="bg-gray-800 py-2 flex justify-center">
+      <div className="flex justify-center items-center w-2/5 sm:w-1/2">
+        <div className="relative h-14 items-center flex-initial">
+          <Link to="/">
+            <img
+              className="h-14 w-auto"
+              src="https://cdn.worldvectorlogo.com/logos/pokemon-23.svg"
+              alt="Pokemon image"
+            />
+          </Link>
+        </div>
+        <div className="ml-8 sm:block flex-grow text-center">
+          <div className="mx-auto flex items-center justify-center space-x-2">
+            <Input placeholder="Type Pokemon Name" />
+            <Button className="bg-blue-600 hover:bg-blue-500" type="submit">Search</Button>
           </div>
         </div>
       </div>
