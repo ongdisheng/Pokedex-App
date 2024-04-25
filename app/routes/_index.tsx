@@ -51,7 +51,7 @@ export default function Index() {
   return (
     <div>
       {data.length > 0 ?
-        <div className="flex flex-col min-h-screen items-center">
+        <div className="flex flex-col min-h-screen items-center bg-gray-50">
           <Title className="text-center m-4">Your Collection</Title>
 
           <div className="w-2/5 sm:w-3/4 items-center">

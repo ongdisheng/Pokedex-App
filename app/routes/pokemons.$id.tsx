@@ -124,7 +124,7 @@ export default function PokemonDetails() {
   const [endIndex, setEndIndex] = useState(movesPerPage);
 
   return (
-    <div className="flex flex-col min-h-screen items-center">
+    <div className="flex flex-col min-h-screen items-center bg-gray-50">
       <div className="flex flex-row justify-center items-center">
         <Title className="capitalize mt-[24px]">
           {pokemonInfo.name} #{pokemonInfo.id}
