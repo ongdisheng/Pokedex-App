@@ -43,7 +43,7 @@ export default function Index() {
   const { data } = useLoaderData<typeof loader>();
 
   // display data using pagination
-  const pokemonsPerPage = 9;
+  const pokemonsPerPage = 12;
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(pokemonsPerPage);
 
@@ -54,12 +54,12 @@ export default function Index() {
         <div className="flex flex-col min-h-screen items-center">
           <Title className="text-center m-4">Your Collection</Title>
 
-          <div className="w-2/5 sm:w-1/2 items-center">
+          <div className="w-2/5 sm:w-3/4 items-center">
             <Row gutter={[16, 16]} justify="center">
               {data.slice(startIndex, endIndex).map(d => (
                 <Col key={d.id}>
                   <Link to={`/pokemons/${d.id}`}>
-                    <Card hoverable className="min-h-full text-center	w-[90vw] sm:w-[300px]">
+                    <Card hoverable className="min-h-full text-center	w-[200px] sm:w-[300px]">
                       <Image
                         preview={false}
                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${d.id}.png`}
