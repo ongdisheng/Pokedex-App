@@ -39,24 +39,26 @@ export const NavBar = () => {
           </Link>
         </div>
         <div className="ml-8 sm:block flex-grow text-center">
-          <div className="mx-auto flex items-center justify-center space-x-2">
+          <div className="mx-auto flex items-center justify-end space-x-2">
             <div className="flex-grow flew-col">
-              <Input
-                name="pokemonName"
-                placeholder="Type Pokemon Name"
-                value={inputVal}
-                onChange={handleChange}
-              />
-              <div className="bg-white rounded">
-                {pokemonList.map(p => (
-                  <Link key={p.id} to={`/pokemons/${p.id}`}>
-                    <div className="p-2 hover:bg-gray-100">
-                      <Text>
-                        {p.name}
-                      </Text>
-                    </div>
-                  </Link>
-                ))}
+              <div className="relative">
+                <Input
+                  name="pokemonName"
+                  placeholder="Type Pokemon Name"
+                  value={inputVal}
+                  onChange={handleChange}
+                />
+                <div className="bg-white/75 rounded z-10 absolute w-full">
+                  {pokemonList.map(p => (
+                    <Link key={p.id} to={`/pokemons/${p.id}`}>
+                      <div className="p-2 hover:bg-gray-100">
+                        <Text className="capitalize">
+                          {p.name}
+                        </Text>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
             <Button className="bg-blue-600 hover:bg-blue-500" type="submit">Search</Button>
