@@ -1,6 +1,6 @@
 // import statements
 import { Link } from "@remix-run/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { BasicPokemonData } from "utils/type";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -10,6 +10,7 @@ import { pokemonQuery } from "~/graphql/query";
 const { Text } = Typography;
 
 export const NavBar = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [visible, setVisible] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [pokemonList, setPokemonList] = useState<{ id: number, name: string }[]>([]);
@@ -50,7 +51,14 @@ export const NavBar = () => {
                   name="pokemonName"
                   placeholder="Type Pokemon Name"
                   value={inputVal}
+                  ref={inputRef}
                   onChange={handleChange}
+                  onFocus={() => {
+                    setVisible(true);
+                  }}
+                  onBlur={() => {
+                    setVisible(false);
+                  }}
                 />
                 <div
                   className="bg-white/75 rounded z-10 absolute w-full"
@@ -60,9 +68,14 @@ export const NavBar = () => {
                     <Link
                       key={p.id}
                       to={`/pokemons/${p.id}`}
+                      onMouseDown={event => {
+                        event.preventDefault();
+                      }}
                       onClick={() => {
                         setInputVal("");
-                        setVisible(!visible);
+                        setPokemonList([]);
+                        setVisible(false);
+                        inputRef.current?.blur();
                       }}
                     >
                       <div className="p-2 hover:bg-gray-100">
