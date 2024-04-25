@@ -10,6 +10,7 @@ import { pokemonQuery } from "~/graphql/query";
 const { Text } = Typography;
 
 export const NavBar = () => {
+  const [isFocus, setIsFocus] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [pokemonList, setPokemonList] = useState<{ id: number, name: string }[]>([]);
 
@@ -47,18 +48,22 @@ export const NavBar = () => {
                   placeholder="Type Pokemon Name"
                   value={inputVal}
                   onChange={handleChange}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
                 />
-                <div className="bg-white/75 rounded z-10 absolute w-full">
-                  {pokemonList.map(p => (
-                    <Link key={p.id} to={`/pokemons/${p.id}`}>
-                      <div className="p-2 hover:bg-gray-100">
-                        <Text className="capitalize">
-                          {p.name}
-                        </Text>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                {isFocus && (
+                  <div className="bg-white/75 rounded z-10 absolute w-full">
+                    {pokemonList.map(p => (
+                      <Link key={p.id} to={`/pokemons/${p.id}`}>
+                        <div className="p-2 hover:bg-gray-100">
+                          <Text className="capitalize">
+                            {p.name}
+                          </Text>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <Button className="bg-blue-600 hover:bg-blue-500" type="submit">Search</Button>
