@@ -33,7 +33,7 @@ export const pokemonDetailsQuery = gql`
 
 export const pokemonQuery = gql`
   query pokemonQuery($namePrefix: String!) {
-    pokemon_v2_pokemon(where: {name: {_like: $namePrefix}}) {
+    pokemon_v2_pokemon(where: {name: {_like: $namePrefix}}, limit: 8) {
       id
       name
     }
