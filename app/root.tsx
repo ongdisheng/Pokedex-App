@@ -10,8 +10,8 @@ import {
 import { Analytics } from "@vercel/analytics/react";
 import { NavBar } from "./components/custom/navbar";
 import styles from "./tailwind.css?url";
-import client from "~/graphql/client.server";
-import { pokemonQuery } from "./graphql/query.server";
+import client from "~/graphql/client";
+import { pokemonQuery } from "./graphql/query";
 import { BasicPokemonData } from "utils/type";
 
 export const links: LinksFunction = () => [

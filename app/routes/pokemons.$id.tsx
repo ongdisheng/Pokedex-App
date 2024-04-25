@@ -7,8 +7,8 @@ import {
 } from "@remix-run/react";
 import { useState } from "react";
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import client from "~/graphql/client.server";
-import { pokemonDetailsQuery } from "~/graphql/query.server";
+import client from "~/graphql/client";
+import { pokemonDetailsQuery } from "~/graphql/query";
 import { getTypeColor } from "utils/getTypeColor";
 import { PokemonData } from "utils/interface";
 import { FormData } from "utils/type";
