@@ -1,6 +1,6 @@
 // import statements
 import { Link } from "@remix-run/react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BasicPokemonData } from "utils/type";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -15,17 +15,24 @@ export const NavBar = () => {
   const [inputVal, setInputVal] = useState("");
   const [pokemonList, setPokemonList] = useState<{ id: number, name: string }[]>([]);
 
+  // debounce mechanism
+  useEffect(() => {
+    const id = setTimeout(async () => {
+      // query pokemons with given name
+      const pokemonData: BasicPokemonData = await client.request(
+        pokemonQuery,
+        { namePrefix: `${inputVal ? inputVal.toLowerCase() + "%" : ""}` }
+      );
+      setPokemonList(pokemonData.pokemon_v2_pokemon!);
+    }, 500);
+
+    return () => clearTimeout(id);
+  }, [inputVal, 500]);
+
   // event handler for input change
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const pokemonName = event.target.value;
     setInputVal(pokemonName);
-
-    // query pokemons with given name
-    const pokemonData: BasicPokemonData = await client.request(
-      pokemonQuery,
-      { namePrefix: `${pokemonName ? pokemonName.toLowerCase() + "%" : ""}` }
-    );
-    setPokemonList(pokemonData.pokemon_v2_pokemon!);
 
     // display pokemon list
     setVisible(true);
