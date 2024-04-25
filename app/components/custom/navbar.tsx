@@ -21,7 +21,7 @@ export const NavBar = () => {
     // query pokemons with given name
     const pokemonData: BasicPokemonData = await client.request(
       pokemonQuery,
-      { namePrefix: `${pokemonName ? pokemonName + "%" : ""}` }
+      { namePrefix: `${pokemonName ? pokemonName.toLowerCase() + "%" : ""}` }
     );
     setPokemonList(pokemonData.pokemon_v2_pokemon!);
   }
