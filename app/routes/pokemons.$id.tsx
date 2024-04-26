@@ -203,7 +203,7 @@ export default function PokemonDetails() {
             <div className="grid grid-cols-2 gap-4">
               {pokemonMoves.slice(startIndex, endIndex).map(move => (
                 <Card key={move.pokemon_v2_move.name}>
-                  <CardHeader className="capitalize">
+                  <CardHeader className="capitalize text-wrap">
                     <CardTitle>{move.pokemon_v2_move.name.split("-").join(" ")}</CardTitle>
                     <CardDescription>Level {move.level}</CardDescription>
                   </CardHeader>
