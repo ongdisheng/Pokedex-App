@@ -46,7 +46,7 @@ export const NavBar = () => {
     <nav className="bg-gray-800 py-2 flex justify-center">
       <div className="flex justify-center items-center w-2/5 sm:w-1/2">
         <div className="relative h-14 items-center flex-initial">
-          <Link to="/">
+          <Link to="/" reloadDocument>
             <img
               className="h-14 w-auto"
               src="https://cdn.worldvectorlogo.com/logos/pokemon-23.svg"
