@@ -79,6 +79,7 @@ export const NavBar = () => {
                     <Link
                       key={p.id}
                       to={`/pokemons/${p.id}`}
+                      reloadDocument
                       onMouseDown={event => {
                         event.preventDefault();
                       }}
