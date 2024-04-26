@@ -19,11 +19,15 @@ export const NavBar = () => {
   useEffect(() => {
     const id = setTimeout(async () => {
       // query pokemons with given name
-      const pokemonData: BasicPokemonData = await client.request(
-        pokemonQuery,
-        { namePrefix: `${inputVal ? inputVal.toLowerCase() + "%" : ""}` }
-      );
-      setPokemonList(pokemonData.pokemon_v2_pokemon!);
+      if (inputVal) {
+        const pokemonData: BasicPokemonData = await client.request(
+          pokemonQuery,
+          { namePrefix: `${inputVal.toLowerCase()}%` }
+        );
+        setPokemonList(pokemonData.pokemon_v2_pokemon!);
+      } else {
+        setPokemonList([]);
+      }
     }, 500);
 
     return () => clearTimeout(id);
