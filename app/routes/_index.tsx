@@ -102,7 +102,12 @@ export default function Index() {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-        </div> : null
+        </div> :
+        <div className="flex flex-col items-center justify-center text-center">
+          <Title className="m-16">Oops! Your Pokemon Collection is Empty</Title>
+          <p className="m-6 text-lg">Find Your Favourite Pokemon Using Search Bar Above</p>
+          <p className="m-4 font-light italic">Gotta Catch 'Em All</p>
+        </div>
       }
     </div>
   );
