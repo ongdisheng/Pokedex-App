@@ -6,7 +6,7 @@ import {
   Form
 } from "@remix-run/react";
 import { useState } from "react";
-import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, HeadersFunction, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import client from "~/graphql/client";
 import { pokemonDetailsQuery } from "~/graphql/query";
 import { getTypeColor } from "utils/getTypeColor";
@@ -122,6 +122,13 @@ export const action = async ({
   return redirect(`/pokemons/${pokemon.id}`, {
     headers: response.headers
   })
+};
+
+// handle cache control for document response
+export let headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate, private"
+  };
 };
 
 export default function PokemonDetails() {
