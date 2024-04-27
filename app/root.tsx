@@ -1,20 +1,91 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
+  useRevalidator,
 } from "@remix-run/react";
 import { Analytics } from "@vercel/analytics/react";
 import { NavBar } from "./components/custom/navbar";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import styles from "./tailwind.css?url";
+import { useEffect, useState } from "react";
+import { createBrowserClient } from "@supabase/auth-helpers-remix";
+import createServerSupabase from "utils/supabase";
+import type { Database } from "db_types";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
 ];
 
+// loader function
+export async function loader({
+  request
+}: LoaderFunctionArgs) {
+  // get env values from server
+  // pass env values to client
+  const env = {
+    SUPABASE_URL: process.env.SUPABASE_URL!,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!
+  };
+
+  // use server client
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
+  // retrieve currently logged in user
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // retrieve session from server
+  const { data: { session } } = await supabase.auth.getSession();
+
+  return json({ env, session, user }, { headers: response.headers })
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  // get env values from loader function
+  const { env, session, user } = useLoaderData<typeof loader>();
+
+  // create singleton supabase client
+  const [supabase] = useState(() =>
+    createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+  );
+
+  // event handler for login
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google"
+    });
+  }
+
+  // call loader function on login and logout events
+  const revalidator = useRevalidator();
+  const serverAccessToken = session?.access_token;
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // data is out of sync 
+      if (session?.access_token !== serverAccessToken) {
+        revalidator.revalidate();
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe();
+    }
+  }, [supabase, serverAccessToken, revalidator]);
+
   return (
     <html lang="en">
       <head>
@@ -25,11 +96,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <NavBar />
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <Analytics />
+        <div>
+          {
+            user ?
+              <>
+                <NavBar supabase={supabase} />
+                {children}
+              </> :
+              <div className="h-dvh flex flex-col justify-center items-center bg-gray-50">
+                <Card className="text-center p-4">
+                  <CardHeader>
+                    <CardTitle>Welcome to Pokemon World!</CardTitle>
+                    <CardDescription className="italic py-2">Gotta Catch 'Em All</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <img 
+                      src="https://seeklogo.com/images/P/Pikachu-logo-D0AAA93F17-seeklogo.com.png"
+                      alt="Pikachu image"
+                    />
+                  </CardContent>
+                  <CardFooter className="flex justify-center">
+                    <Button className="m-4" onClick={handleLogin}>Login with Google</Button>
+                  </CardFooter>
+                </Card>
+              </div>
+          }
+          <ScrollRestoration />
+          <Scripts />
+          <Analytics />
+        </div>
       </body>
     </html>
   );

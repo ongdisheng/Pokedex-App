@@ -6,13 +6,13 @@ import {
   Form
 } from "@remix-run/react";
 import { useState } from "react";
-import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, HeadersFunction, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import client from "~/graphql/client";
 import { pokemonDetailsQuery } from "~/graphql/query";
 import { getTypeColor } from "utils/getTypeColor";
 import { PokemonData } from "utils/interface";
 import { FormData } from "utils/type";
-import supabase from "utils/supabase";
+import createServerSupabase from "utils/supabase";
 import { Progress } from "~/components/ui/progress";
 import { Button } from "~/components/ui/button";
 import {
@@ -44,6 +44,7 @@ const { Title, Text } = Typography;
 // loader function
 export async function loader({
   params,
+  request
 }: LoaderFunctionArgs) {
   // request details data from PokeAPI
   let data: PokemonData;
@@ -55,13 +56,20 @@ export async function loader({
     });
   }
 
+  // use server client
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
   // query if this pokemon exists from db 
   const isOwned = await supabase
     .from("Pokemons_Owned")
     .select()
     .eq("id", params.id!);
 
-  return json({ data, isOwned: isOwned.data?.length === 1 })
+  return json(
+    { data, isOwned: isOwned.data?.length === 1 },
+    { headers: response.headers }
+  )
 }
 
 // handle errors from loader function
@@ -88,6 +96,13 @@ export const action = async ({
   const formData = await request.formData();
   const { action, ...pokemon } = Object.fromEntries(formData) as FormData;
 
+  // use server client
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
+  // retrieve currently logged in user
+  const { data: { user } } = await supabase.auth.getUser();
+
   // delete or add pokemon depending on action value
   if (action === "Remove") {
     await supabase
@@ -97,10 +112,23 @@ export const action = async ({
   } else {
     await supabase
       .from("Pokemons_Owned")
-      .insert({ id: parseInt(pokemon.id), name: pokemon.name })
+      .insert({
+        id: parseInt(pokemon.id),
+        name: pokemon.name,
+        user_id: user?.id!
+      })
   }
 
-  return redirect(`/pokemons/${pokemon.id}`)
+  return redirect(`/pokemons/${pokemon.id}`, {
+    headers: response.headers
+  })
+};
+
+// handle cache control for document response
+export let headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate, private"
+  };
 };
 
 export default function PokemonDetails() {
