@@ -7,12 +7,13 @@ import {
   ScrollRestoration,
   json,
   useLoaderData,
+  useRevalidator,
 } from "@remix-run/react";
 import { Analytics } from "@vercel/analytics/react";
 import { NavBar } from "./components/custom/navbar";
 import { Button } from "~/components/ui/button";
 import styles from "./tailwind.css?url";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/auth-helpers-remix";
 import createServerSupabase from "utils/supabase";
 import type { Database } from "db_types";
@@ -38,14 +39,16 @@ export async function loader({
 
   // retrieve currently logged in user
   const { data: { user } } = await supabase.auth.getUser();
-  console.log(user);
 
-  return json({ env, user }, { headers: response.headers })
+  // retrieve session from server
+  const { data: { session } } = await supabase.auth.getSession();
+
+  return json({ env, session, user }, { headers: response.headers })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
   // get env values from loader function
-  const { env, user } = useLoaderData<typeof loader>();
+  const { env, session, user } = useLoaderData<typeof loader>();
 
   // create singleton supabase client
   const [supabase] = useState(() =>
@@ -54,11 +57,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   // event handler for login
   const handleLogin = async () => {
-    console.log("hello")
-    const { error } = await supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "google"
     });
   }
+
+  // call loader function on login and logout events
+  const revalidator = useRevalidator();
+  const serverAccessToken = session?.access_token;
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // data is out of sync 
+      if (session?.access_token !== serverAccessToken) {
+        revalidator.revalidate();
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe();
+    }
+  }, [supabase, serverAccessToken, revalidator]);
 
   return (
     <html lang="en">
