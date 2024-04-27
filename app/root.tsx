@@ -12,6 +12,14 @@ import {
 import { Analytics } from "@vercel/analytics/react";
 import { NavBar } from "./components/custom/navbar";
 import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import styles from "./tailwind.css?url";
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/auth-helpers-remix";
@@ -95,8 +103,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <NavBar supabase={supabase} />
                 {children}
               </> :
-              <div>
-                <Button onClick={handleLogin}>Login</Button>
+              <div className="h-dvh flex flex-col justify-center items-center bg-gray-50">
+                <Card className="text-center p-4">
+                  <CardHeader>
+                    <CardTitle>Welcome to Pokemon World!</CardTitle>
+                    <CardDescription className="italic py-2">Gotta Catch 'Em All</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <img 
+                      src="https://seeklogo.com/images/P/Pikachu-logo-D0AAA93F17-seeklogo.com.png"
+                      alt="Pikachu image"
+                    />
+                  </CardContent>
+                  <CardFooter className="flex justify-center">
+                    <Button className="m-4" onClick={handleLogin}>Login with Google</Button>
+                  </CardFooter>
+                </Card>
               </div>
           }
           <ScrollRestoration />
