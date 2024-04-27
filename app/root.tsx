@@ -15,6 +15,7 @@ import styles from "./tailwind.css?url";
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/auth-helpers-remix";
 import createServerSupabase from "utils/supabase";
+import type { Database } from "db_types";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
@@ -48,12 +49,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   // create singleton supabase client
   const [supabase] = useState(() =>
-    createBrowserClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+    createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   );
 
   // event handler for login
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
+    console.log("hello")
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google"
     });
   }
@@ -68,19 +70,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {
-          user ?
-            <>
-              <NavBar />
-              {children}
-              <ScrollRestoration />
-              <Scripts />
-              <Analytics />
-            </> :
-            <div>
-              <Button onClick={handleLogin}>Login</Button>
-            </div>
-        }
+        <div>
+          {
+            user ?
+              <>
+                <NavBar supabase={supabase} />
+                {children}
+              </> :
+              <div>
+                <Button onClick={handleLogin}>Login</Button>
+              </div>
+          }
+          <ScrollRestoration />
+          <Scripts />
+          <Analytics />
+        </div>
       </body>
     </html>
   );

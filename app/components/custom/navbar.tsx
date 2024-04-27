@@ -7,13 +7,20 @@ import { Input } from "~/components/ui/input";
 import { Typography } from "antd";
 import client from "~/graphql/client";
 import { pokemonQuery } from "~/graphql/query";
+import { Database } from "db_types";
+import { SupabaseClient } from "@supabase/supabase-js";
 const { Text } = Typography;
 
-export const NavBar = () => {
+export const NavBar = ({ supabase }: { supabase: SupabaseClient<Database> }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [visible, setVisible] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [pokemonList, setPokemonList] = useState<{ id: number, name: string }[]>([]);
+
+  // event handler for logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  }
 
   // debounce mechanism
   useEffect(() => {
@@ -100,7 +107,12 @@ export const NavBar = () => {
                 </div>
               </div>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-500" type="submit">Search</Button>
+            <Button 
+              className="bg-red-500 hover:bg-red-400"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
           </div>
         </div>
       </div>
