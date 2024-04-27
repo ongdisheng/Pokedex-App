@@ -1,7 +1,7 @@
 // import statements
-import { HeadersFunction, json } from "@remix-run/node";
+import { HeadersFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import supabase from "utils/supabase";
+import createServerSupabase from "utils/supabase";
 import {
   Pagination,
   PaginationContent,
@@ -23,12 +23,18 @@ const { Title, Text } = Typography;
 const { Content } = Layout;
 
 // loader function
-export const loader = async () => {
+export async function loader({
+  request
+}: LoaderFunctionArgs) {
+  // use server client
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
   // retrieve owned pokemons from db
   let { data } = await supabase.from("Pokemons_Owned").select();
   data = data ?? [];
   data.sort((a, b) => a.id - b.id);
-  return json({ data });
+  return json({ data }, { headers: response.headers });
 };
 
 // handle cache control for document response

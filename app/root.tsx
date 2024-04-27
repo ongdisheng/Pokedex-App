@@ -1,20 +1,63 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
 } from "@remix-run/react";
 import { Analytics } from "@vercel/analytics/react";
 import { NavBar } from "./components/custom/navbar";
+import { Button } from "~/components/ui/button";
 import styles from "./tailwind.css?url";
+import { useState } from "react";
+import { createBrowserClient } from "@supabase/auth-helpers-remix";
+import createServerSupabase from "utils/supabase";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
 ];
 
+// loader function
+export async function loader({
+  request
+}: LoaderFunctionArgs) {
+  // get env values from server
+  // pass env values to client
+  const env = {
+    SUPABASE_URL: process.env.SUPABASE_URL!,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!
+  };
+
+  // use server client
+  const response = new Response();
+  const supabase = createServerSupabase({ request, response });
+
+  // retrieve currently logged in user
+  const { data: { user } } = await supabase.auth.getUser();
+  console.log(user);
+
+  return json({ env, user }, { headers: response.headers })
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  // get env values from loader function
+  const { env, user } = useLoaderData<typeof loader>();
+
+  // create singleton supabase client
+  const [supabase] = useState(() =>
+    createBrowserClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+  );
+
+  // event handler for login
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google"
+    });
+  }
+
   return (
     <html lang="en">
       <head>
@@ -25,11 +68,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <NavBar />
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <Analytics />
+        {
+          user ?
+            <>
+              <NavBar />
+              {children}
+              <ScrollRestoration />
+              <Scripts />
+              <Analytics />
+            </> :
+            <div>
+              <Button onClick={handleLogin}>Login</Button>
+            </div>
+        }
       </body>
     </html>
   );
