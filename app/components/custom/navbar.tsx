@@ -1,5 +1,5 @@
 // import statements
-import { Link } from "@remix-run/react";
+import { Link, redirect, useNavigate } from "@remix-run/react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BasicPokemonData } from "utils/type";
 import { Button } from "~/components/ui/button";
@@ -16,10 +16,12 @@ export const NavBar = ({ supabase }: { supabase: SupabaseClient<Database> }) => 
   const [visible, setVisible] = useState(false);
   const [inputVal, setInputVal] = useState("");
   const [pokemonList, setPokemonList] = useState<{ id: number, name: string }[]>([]);
+  const navigate = useNavigate();
 
   // event handler for logout
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    navigate("/");
   }
 
   // debounce mechanism
