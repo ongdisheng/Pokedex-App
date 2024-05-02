@@ -81,7 +81,7 @@ export const NavBar = ({ supabase }: { supabase: SupabaseClient<Database> }) => 
                   }}
                 />
                 <div
-                  className="bg-white/75 rounded z-10 absolute w-full"
+                  className="bg-white border rounded z-10 absolute w-full"
                   style={{ display: visible ? "" : "none" }}
                 >
                   {pokemonList.map(p => (
