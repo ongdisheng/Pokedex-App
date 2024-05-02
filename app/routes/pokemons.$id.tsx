@@ -3,7 +3,8 @@ import {
   isRouteErrorResponse,
   useLoaderData,
   useRouteError,
-  Form
+  Form,
+  useNavigation
 } from "@remix-run/react";
 import { useState } from "react";
 import { ActionFunctionArgs, HeadersFunction, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
@@ -38,6 +39,7 @@ import {
   Image,
   Typography,
 } from "antd";
+import { Spin } from "antd";
 
 const { Title, Text } = Typography;
 
@@ -135,6 +137,9 @@ export default function PokemonDetails() {
   // get data from loader function
   const { data, isOwned } = useLoaderData<typeof loader>();
 
+  // retrieve form status
+  const navigation = useNavigation();
+
   // retrieve pokemon info from data
   const pokemonInfo = data.pokemon_v2_pokemon[0];
   const pokemonMoves = pokemonInfo.pokemon_v2_pokemonmoves;
@@ -173,11 +178,16 @@ export default function PokemonDetails() {
             name="name"
             value={pokemonInfo.name}
           />
-          <Button
-            type="submit"
-            className={`m-4 ${isOwned ? "bg-red-500 hover:bg-red-400" : "bg-blue-500 hover:bg-blue-400"}`}>
-            {isOwned ? "Remove" : "Add"}
-          </Button>
+          {
+            navigation.formAction !== undefined &&
+            (navigation.state === "loading" || navigation.state === "submitting") ?
+              <Spin className="m-4" /> :
+              <Button
+                type="submit"
+                className={`m-4 ${isOwned ? "bg-red-500 hover:bg-red-400" : "bg-blue-500 hover:bg-blue-400"}`}>
+                {isOwned ? "Remove" : "Add"}
+              </Button>
+          }
         </Form>
       </div>
       <div className="flex items-center">
